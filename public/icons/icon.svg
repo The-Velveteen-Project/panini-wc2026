@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 192 192">
+  <rect width="192" height="192" rx="40" fill="#003DA5"/>
+  <circle cx="96" cy="90" r="52" fill="white"/>
+  <circle cx="96" cy="90" r="44" fill="#003DA5"/>
+  <!-- Soccer ball pattern -->
+  <circle cx="96" cy="90" r="38" fill="white"/>
+  <polygon points="96,58 110,70 104,86 88,86 82,70" fill="#111"/>
+  <polygon points="110,70 126,68 132,84 120,94 104,86" fill="white"/>
+  <polygon points="88,86 82,70 66,68 60,84 72,94" fill="white"/>
+  <polygon points="104,86 120,94 116,112 96,116 76,112 72,94 88,86" fill="white"/>
+  <polygon points="116,112 132,84 146,94 140,112 126,120" fill="#111" opacity="0.2"/>
+  <!-- WC2026 text -->
+  <text x="96" y="155" text-anchor="middle" font-family="Arial Black, sans-serif"
+        font-size="14" font-weight="900" fill="white">WC2026</text>
+</svg>
