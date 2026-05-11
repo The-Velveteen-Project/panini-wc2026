@@ -101,11 +101,14 @@ CREATE POLICY "Users can update own profile"
 ALTER PUBLICATION supabase_realtime ADD TABLE public.user_stickers;
 
 -- =============================================
--- Sample Data (5 sections × ~10 stickers)
+-- Datos del álbum
+-- Ejecuta supabase/seed.sql para cargar las 980 láminas reales.
 -- =============================================
 
+-- Vista previa: ejecuta seed.sql en SQL Editor después de este schema.
+-- INSERT INTO public.stickers ... (ver seed.sql)
+-- Placeholder para que el schema compile solo:
 INSERT INTO public.stickers (section, number, name, type) VALUES
-  -- Argentina
   ('Argentina', 1,  'Escudo Argentina',         'badge'),
   ('Argentina', 2,  'Lionel Messi',              'player'),
   ('Argentina', 3,  'Ángel Di María',            'player'),
