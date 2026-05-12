@@ -1,107 +1,107 @@
 'use client'
 
-import { useState } from 'react'
+import { sectionCode, localNumber } from '@/lib/types'
 
-interface ExchangeSticker {
+interface RepeatedSticker {
   id: number
   section: string
   number: number
   name: string
-  myCount: number
-  theirCount: number
+  count: number
 }
 
 interface Props {
-  iGiveToThem: ExchangeSticker[]
-  theyGiveToMe: ExchangeSticker[]
-  myName: string
-  theirName: string
+  repetidas: RepeatedSticker[]
 }
 
-export default function ExchangesClient({ iGiveToThem, theyGiveToMe, myName, theirName }: Props) {
-  const [tab, setTab] = useState<'give' | 'receive'>('receive')
+function getFlagEmoji(section: string): string {
+  const flags: Record<string, string> = {
+    'Introducción':'📖','Alemania':'🇩🇪','Algeria':'🇩🇿','Arabia Saudita':'🇸🇦',
+    'Argentina':'🇦🇷','Australia':'🇦🇺','Austria':'🇦🇹','Bosnia y Herzegovina':'🇧🇦',
+    'Brasil':'🇧🇷','Bélgica':'🇧🇪','Cabo Verde':'🇨🇻','Canadá':'🇨🇦','Chequia':'🇨🇿',
+    'Colombia':'🇨🇴','Congo DR':'🇨🇩','Corea del Sur':'🇰🇷','Costa de Marfil':'🇨🇮',
+    'Croacia':'🇭🇷','Curaçao':'🇨🇼','Ecuador':'🇪🇨','Egipto':'🇪🇬','Escocia':'🏴󠁧󠁢󠁳󠁣󠁴󠁿',
+    'España':'🇪🇸','Estados Unidos':'🇺🇸','Francia':'🇫🇷','Ghana':'🇬🇭','Haití':'🇭🇹',
+    'Inglaterra':'🏴󠁧󠁢󠁥󠁮󠁧󠁿','Irak':'🇮🇶','Irán':'🇮🇷','Japón':'🇯🇵','Jordania':'🇯🇴',
+    'Marruecos':'🇲🇦','México':'🇲🇽','Noruega':'🇳🇴','Nueva Zelanda':'🇳🇿','Panamá':'🇵🇦',
+    'Paraguay':'🇵🇾','Países Bajos':'🇳🇱','Portugal':'🇵🇹','Qatar':'🇶🇦','Senegal':'🇸🇳',
+    'Sudáfrica':'🇿🇦','Suecia':'🇸🇪','Suiza':'🇨🇭','Turquía':'🇹🇷','Túnez':'🇹🇳',
+    'Uruguay':'🇺🇾','Uzbekistán':'🇺🇿',
+  }
+  return flags[section] ?? '🏳️'
+}
 
-  const current = tab === 'receive' ? theyGiveToMe : iGiveToThem
-
-  const bySection: Record<string, typeof current> = {}
-  for (const s of current) {
+export default function ExchangesClient({ repetidas }: Props) {
+  // Agrupar por sección
+  const bySection: Record<string, RepeatedSticker[]> = {}
+  for (const s of repetidas) {
     if (!bySection[s.section]) bySection[s.section] = []
     bySection[s.section].push(s)
   }
+
+  const totalExtras = repetidas.reduce((sum, s) => sum + (s.count - 1), 0)
 
   return (
     <div className="flex flex-col">
       {/* Header */}
       <div className="bg-wc-red text-white px-4 pt-12 pb-4">
-        <h1 className="text-xl font-black">Intercambios 🔄</h1>
+        <h1 className="text-xl font-black">Repetidas 🔄</h1>
         <p className="text-red-200 text-xs mt-0.5">
-          {myName} ↔ {theirName}
+          {repetidas.length} láminas · {totalExtras} sobran para cambiar
         </p>
-
-        {/* Tabs */}
-        <div className="flex gap-2 mt-4">
-          <button
-            onClick={() => setTab('receive')}
-            className={`flex-1 py-2 rounded-xl text-sm font-semibold transition-colors ${
-              tab === 'receive'
-                ? 'bg-white text-wc-red'
-                : 'bg-red-700/50 text-red-100'
-            }`}
-          >
-            {theirName} me da ({theyGiveToMe.length})
-          </button>
-          <button
-            onClick={() => setTab('give')}
-            className={`flex-1 py-2 rounded-xl text-sm font-semibold transition-colors ${
-              tab === 'give'
-                ? 'bg-white text-wc-red'
-                : 'bg-red-700/50 text-red-100'
-            }`}
-          >
-            Yo le doy ({iGiveToThem.length})
-          </button>
-        </div>
       </div>
 
-      {/* List */}
+      {/* Lista */}
       <div className="px-4 py-3">
-        {current.length === 0 ? (
+        {repetidas.length === 0 ? (
           <div className="flex flex-col items-center py-16 text-gray-400">
-            <span className="text-5xl mb-3">🎉</span>
-            <p className="text-sm font-medium">
-              {tab === 'receive'
-                ? `${theirName} no tiene repetidas que te falten`
-                : `No tienes repetidas que le falten a ${theirName}`}
-            </p>
+            <span className="text-5xl mb-3">✨</span>
+            <p className="text-sm font-medium">Sin repetidas por ahora</p>
+            <p className="text-xs mt-1 text-gray-300">¡Sigan abriendo sobres!</p>
           </div>
         ) : (
-          <div className="space-y-4">
+          <div className="space-y-5">
             {Object.entries(bySection).map(([section, items]) => (
               <div key={section}>
-                <h3 className="text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">
-                  {section}
-                </h3>
+                {/* Cabecera sección */}
+                <div className="flex items-center gap-2 mb-2">
+                  <span>{getFlagEmoji(section)}</span>
+                  <span className="text-xs font-black text-gray-600 uppercase tracking-wider">
+                    {sectionCode(section)}
+                  </span>
+                  <span className="text-xs text-gray-400">· {section}</span>
+                  <span className="ml-auto text-xs bg-wc-red/10 text-wc-red
+                                   font-semibold px-2 py-0.5 rounded-full">
+                    {items.length}
+                  </span>
+                </div>
+
+                {/* Láminas */}
                 <div className="space-y-1.5">
-                  {items.map(s => (
-                    <div
-                      key={s.id}
-                      className="flex items-center bg-white rounded-xl px-4 py-3
-                                 border border-gray-100 shadow-sm"
-                    >
-                      <span className="text-sm font-black text-gray-300 w-8 shrink-0">
-                        #{s.number}
-                      </span>
-                      <span className="flex-1 text-sm font-medium text-gray-700 truncate">
-                        {s.name}
-                      </span>
-                      <div className="flex gap-2 ml-2 shrink-0">
-                        <span className="text-xs bg-wc-gold/20 text-yellow-700 font-semibold
-                                         px-2 py-0.5 rounded-full">
-                          ×{tab === 'receive' ? s.theirCount : s.myCount}
+                  {items.map(s => {
+                    const num = localNumber(s.number)
+                    return (
+                      <div
+                        key={s.id}
+                        className="flex items-center bg-white rounded-xl px-4 py-2.5
+                                   border border-gray-100 shadow-sm"
+                      >
+                        {/* Código + número */}
+                        <span className="text-sm font-black text-gray-400 w-12 shrink-0">
+                          {sectionCode(s.section)}{num.toString().padStart(2,'0')}
+                        </span>
+                        {/* Nombre */}
+                        <span className="flex-1 text-sm text-gray-700 truncate">
+                          {s.name}
+                        </span>
+                        {/* Cuántas sobran */}
+                        <span className="shrink-0 ml-2 text-xs bg-wc-gold/20 text-yellow-700
+                                         font-bold px-2 py-0.5 rounded-full">
+                          ×{s.count - 1} extra{s.count - 1 > 1 ? 's' : ''}
                         </span>
                       </div>
-                    </div>
-                  ))}
+                    )
+                  })}
                 </div>
               </div>
             ))}
